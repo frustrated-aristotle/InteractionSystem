@@ -106,6 +106,7 @@ namespace InteractionSystem.Runtime.Core
             if (m_UseOpenClosedRotation)
             {
                 SyncTransformToState(false);
+                Debug.Log($"[Interactable] {gameObject.name} Awake: kapalı rotasyon uygulandı (Load varsa Start'ta ezilecek).");
             }
         }
 
@@ -219,7 +220,9 @@ namespace InteractionSystem.Runtime.Core
             if (!m_UseOpenClosedRotation) return;
 
             Transform target = m_RotationTarget != null ? m_RotationTarget : transform;
-            target.localRotation = Quaternion.Euler(isActive ? m_OpenRotationEuler : m_ClosedRotationEuler);
+            Vector3 euler = isActive ? m_OpenRotationEuler : m_ClosedRotationEuler;
+            target.localRotation = Quaternion.Euler(euler);
+            Debug.Log($"[Interactable] {gameObject.name} SyncTransformToState | isActive={isActive} | target={target.name} | euler=({euler.x:F1},{euler.y:F1},{euler.z:F1})");
         }
 
         /// <summary>
@@ -229,6 +232,12 @@ namespace InteractionSystem.Runtime.Core
         /// <param name="isActive">Açık/toggled ise true, kapalı ise false.</param>
         protected void SyncAnimatorToState(bool isActive)
         {
+            if (m_UseOpenClosedRotation)
+            {
+                Debug.Log($"[Interactable] {gameObject.name} SyncAnimatorToState SKIP (UseOpenClosedRotation=true, animator rotasyonu ezmesin diye).");
+                return;
+            }
+
             if (m_Animator == null)
             {
                 Debug.LogWarning($"[Interactable] {gameObject.name}: Animator is null; SyncAnimatorToState skipped.");

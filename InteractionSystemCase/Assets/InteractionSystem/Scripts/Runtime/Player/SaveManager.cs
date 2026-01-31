@@ -22,8 +22,15 @@ namespace InteractionSystem.Runtime.Player
         {
             if (m_LoadOnStart)
             {
-                Load();
+                StartCoroutine(LoadNextFrame());
             }
+        }
+
+        private System.Collections.IEnumerator LoadNextFrame()
+        {
+            yield return null;
+            Debug.Log("[SaveManager] Load() çalışıyor (1 frame sonra, tüm Awake/Start bitti).");
+            Load();
         }
 
         private void OnApplicationQuit()
@@ -107,7 +114,12 @@ namespace InteractionSystem.Runtime.Player
             {
                 foreach (var e in data.doors ?? System.Array.Empty<InteractionSaveData.Entry>())
                 {
-                    if (e.id == door.GetSaveId()) { door.LoadState(e.state); break; }
+                    if (e.id == door.GetSaveId())
+                    {
+                        Debug.Log($"[SaveManager] Door LoadState id={e.id} state={e.state}");
+                        door.LoadState(e.state);
+                        break;
+                    }
                 }
             }
 
@@ -115,7 +127,12 @@ namespace InteractionSystem.Runtime.Player
             {
                 foreach (var e in data.chests ?? System.Array.Empty<InteractionSaveData.Entry>())
                 {
-                    if (e.id == chest.GetSaveId()) { chest.LoadState(e.state); break; }
+                    if (e.id == chest.GetSaveId())
+                    {
+                        Debug.Log($"[SaveManager] Chest LoadState id={e.id} state={e.state}");
+                        chest.LoadState(e.state);
+                        break;
+                    }
                 }
             }
 
@@ -131,7 +148,12 @@ namespace InteractionSystem.Runtime.Player
             {
                 foreach (var e in data.switches ?? System.Array.Empty<InteractionSaveData.Entry>())
                 {
-                    if (e.id == sw.GetSaveId()) { sw.LoadState(e.state); break; }
+                    if (e.id == sw.GetSaveId())
+                    {
+                        Debug.Log($"[SaveManager] Switch LoadState id={e.id} state={e.state}");
+                        sw.LoadState(e.state);
+                        break;
+                    }
                 }
             }
 
@@ -139,7 +161,12 @@ namespace InteractionSystem.Runtime.Player
             {
                 foreach (var e in data.pressurePlates ?? System.Array.Empty<InteractionSaveData.Entry>())
                 {
-                    if (e.id == pp.GetSaveId()) { pp.LoadState(e.state); break; }
+                    if (e.id == pp.GetSaveId())
+                    {
+                        Debug.Log($"[SaveManager] PressurePlate LoadState id={e.id} state={e.state}");
+                        pp.LoadState(e.state);
+                        break;
+                    }
                 }
             }
 
