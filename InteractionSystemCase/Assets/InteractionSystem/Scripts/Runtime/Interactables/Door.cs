@@ -4,21 +4,26 @@ using InteractionSystem.Runtime.Core;
 namespace InteractionSystem.Runtime.Interactables
 {
     /// <summary>
-    /// Açılıp kapanabilen kapı. Kilitli olabilir, anahtar gerektirebilir.
+    /// Açılıp kapanabilen kapı. Kilitli ise sadece atanmış KeyItemData tipindeki anahtar açar.
     /// Animator ile Open/Close trigger kullanır (base Interactable).
     /// </summary>
     /// <remarks>
-    /// Toggle interaction type. Kilitli ise doğru anahtar envanterde olmalıdır.
+    /// Bir kapı sadece tek bir anahtar tipi (bir KeyItemData asset'i) ile açılır.
+    /// Eşleşme: Interactor envanterinde m_RequiredKey ile aynı ScriptableObject referansı varsa kapı açılır.
+    /// Birden fazla kapı için farklı KeyItemData atanarak color-coded / çoklu anahtar tipi kullanılır.
     /// </remarks>
     public class Door : Interactable
     {
         #region Fields
 
         [SerializeField] private bool m_IsLocked = true;
+        [Tooltip("Bu kapıyı açan tek anahtar tipi. Sadece bu KeyItemData envanterde varsa kapı açılır.")]
         [SerializeField] private KeyItemData m_RequiredKey;
 
         [Header("Prompts")]
         [SerializeField] private string m_KeyRequiredPrompt = "Anahtar gerekli";
+        [SerializeField] [Tooltip("True ise prompt'ta anahtar adı gösterilir (örn: 'Rusty Key gerekli').")]
+        private bool m_ShowKeyNameInPrompt = true;
 
         private bool m_IsOpen;
 
@@ -36,9 +41,24 @@ namespace InteractionSystem.Runtime.Interactables
         /// </summary>
         public bool IsLocked => m_IsLocked;
 
+        /// <summary>
+        /// Bu kapıyı açan anahtar tipi. Bir kapı sadece bu KeyItemData ile açılır.
+        /// </summary>
+        public KeyItemData RequiredKey => m_RequiredKey;
+
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Verilen anahtar tipi bu kapıyı açar mı? (Aynı KeyItemData referansı ise true.)
+        /// </summary>
+        /// <param name="key">Kontrol edilecek anahtar tipi.</param>
+        /// <returns>Aynı asset ise true.</returns>
+        public bool DoesKeyUnlock(KeyItemData key)
+        {
+            return m_RequiredKey != null && key == m_RequiredKey;
+        }
 
         /// <summary>
         /// Kapıyı açıp kapatır. Switch UnityEvent'inden çağrılabilir.
@@ -63,8 +83,13 @@ namespace InteractionSystem.Runtime.Interactables
         /// <inheritdoc/>
         public override string GetUnableToInteractPrompt(IInteractor interactor)
         {
-            if (m_IsLocked && m_RequiredKey != null && (interactor == null || !interactor.Inventory.HasItem(m_RequiredKey)))
+            if (m_IsLocked && m_RequiredKey != null && (interactor == null || interactor.Inventory == null || !interactor.Inventory.HasKey(m_RequiredKey)))
             {
+                if (m_ShowKeyNameInPrompt)
+                {
+                    return $"{m_RequiredKey.KeyName} gerekli";
+                }
+
                 return m_KeyRequiredPrompt;
             }
 
@@ -84,7 +109,7 @@ namespace InteractionSystem.Runtime.Interactables
         /// <inheritdoc/>
         public override bool CanInteract(IInteractor interactor)
         {
-            if (interactor == null)
+            if (interactor == null || interactor.Inventory == null)
             {
                 return false;
             }
@@ -93,22 +118,23 @@ namespace InteractionSystem.Runtime.Interactables
             {
                 return true;
             }
-            return m_RequiredKey != null && interactor.Inventory.HasItem(m_RequiredKey);
+
+            return m_RequiredKey != null && interactor.Inventory.HasKey(m_RequiredKey);
         }
 
         /// <inheritdoc/>
         public override void Interact(IInteractor interactor)
         {
-            if (interactor == null)
+            if (interactor == null || interactor.Inventory == null)
             {
                 return;
             }
 
             if (m_IsLocked)
             {
-                if (m_RequiredKey == null || !interactor.Inventory.HasItem(m_RequiredKey))
+                if (m_RequiredKey == null || !interactor.Inventory.HasKey(m_RequiredKey))
                 {
-                    Debug.Log("[Door] Anahtar gerekli!");
+                    Debug.Log($"[Door] Anahtar gerekli! Gerekli: {m_RequiredKey?.KeyName ?? "?"}");
                     return;
                 }
 

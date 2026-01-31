@@ -22,5 +22,13 @@ namespace InteractionSystem.Runtime.Core
         /// <param name="item">Aranacak item.</param>
         /// <returns>Varsa true, yoksa false.</returns>
         bool HasItem(ScriptableObject item);
+
+        /// <summary>
+        /// Envanterde belirtilen anahtar tipinin olup olmadığını kontrol eder.
+        /// Kapı kilidi eşleşmesi için kullanılır (referans veya aynı KeyName ile eşleşme).
+        /// </summary>
+        /// <param name="key">Aranacak anahtar tipi (KeyItemData).</param>
+        /// <returns>Varsa true, yoksa false.</returns>
+        bool HasKey(KeyItemData key);
     }
 }

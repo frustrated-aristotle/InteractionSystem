@@ -59,6 +59,33 @@ namespace InteractionSystem.Runtime.Player
             return m_Items.Contains(item);
         }
 
+        /// <inheritdoc/>
+        public bool HasKey(KeyItemData key)
+        {
+            if (key == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < m_Items.Count; i++)
+            {
+                if (m_Items[i] is KeyItemData invKey)
+                {
+                    if (object.ReferenceEquals(invKey, key))
+                    {
+                        return true;
+                    }
+
+                    if (invKey.KeyName == key.KeyName)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         #endregion
     }
 }
