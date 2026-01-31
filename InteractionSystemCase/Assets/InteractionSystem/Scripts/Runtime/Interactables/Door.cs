@@ -5,6 +5,7 @@ namespace InteractionSystem.Runtime.Interactables
 {
     /// <summary>
     /// Açılıp kapanabilen kapı. Kilitli olabilir, anahtar gerektirebilir.
+    /// Animator ile Open/Close trigger kullanır (base Interactable).
     /// </summary>
     /// <remarks>
     /// Toggle interaction type. Kilitli ise doğru anahtar envanterde olmalıdır.
@@ -15,6 +16,9 @@ namespace InteractionSystem.Runtime.Interactables
 
         [SerializeField] private bool m_IsLocked = true;
         [SerializeField] private KeyItemData m_RequiredKey;
+
+        [Header("Prompts")]
+        [SerializeField] private string m_KeyRequiredPrompt = "Anahtar gerekli";
 
         private bool m_IsOpen;
 
@@ -42,6 +46,7 @@ namespace InteractionSystem.Runtime.Interactables
         public void Toggle()
         {
             m_IsOpen = !m_IsOpen;
+            PlayInteractionFeedback(m_IsOpen);
             Debug.Log(m_IsOpen ? "[Door] Kapı açıldı (Switch)." : "[Door] Kapı kapatıldı (Switch).");
         }
 
@@ -50,13 +55,22 @@ namespace InteractionSystem.Runtime.Interactables
         #region Interactable Overrides
 
         /// <inheritdoc/>
-        public override string GetInteractionPrompt()
+        protected override bool IsInActiveState() => m_IsOpen;
+
+        /// <inheritdoc/>
+        public override string GetUnableToInteractPrompt(IInteractor interactor)
         {
-            if (m_IsLocked && m_RequiredKey != null)
+            if (m_IsLocked && m_RequiredKey != null && (interactor == null || !interactor.Inventory.HasItem(m_RequiredKey)))
             {
-                return "Anahtar gerekli";
+                return m_KeyRequiredPrompt;
             }
 
+            return base.GetUnableToInteractPrompt(interactor);
+        }
+
+        /// <inheritdoc/>
+        public override string GetInteractionPrompt()
+        {
             return base.GetInteractionPrompt();
         }
 
@@ -76,7 +90,6 @@ namespace InteractionSystem.Runtime.Interactables
             {
                 return true;
             }
-            Debug.Log("Anahtar var mı? " + (m_RequiredKey != null && interactor.Inventory.HasItem(m_RequiredKey)));
             return m_RequiredKey != null && interactor.Inventory.HasItem(m_RequiredKey);
         }
 
@@ -100,6 +113,7 @@ namespace InteractionSystem.Runtime.Interactables
             }
 
             m_IsOpen = !m_IsOpen;
+            PlayInteractionFeedback(m_IsOpen);
             Debug.Log(m_IsOpen ? "[Door] Kapı açıldı." : "[Door] Kapı kapatıldı.");
         }
 

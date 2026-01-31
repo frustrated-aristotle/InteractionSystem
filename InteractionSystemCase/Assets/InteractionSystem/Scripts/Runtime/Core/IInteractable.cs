@@ -33,7 +33,14 @@ namespace InteractionSystem.Runtime.Core
         /// <summary>
         /// UI'da gösterilecek etkileşim mesajını döndürür.
         /// </summary>
-        /// <returns>Dinamik prompt metni (örn: "Press E to Open", "Anahtar gerekli").</returns>
+        /// <returns>Dinamik prompt metni (örn: "Press E to Open").</returns>
         string GetInteractionPrompt();
+
+        /// <summary>
+        /// Etkileşim yapılamadığında gösterilecek mesajı döndürür (örn: kilitli kapı, anahtar yok).
+        /// </summary>
+        /// <param name="interactor">Etkileşimi deneyen interactor.</param>
+        /// <returns>"Anahtar gerekli" gibi unable prompt metni.</returns>
+        string GetUnableToInteractPrompt(IInteractor interactor);
     }
 }

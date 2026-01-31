@@ -15,6 +15,8 @@ namespace InteractionSystem.Runtime.Interactables
     {
         #region Fields
 
+        [SerializeField] private string m_AlreadyOpenedPrompt = "Already opened";
+
         private bool m_IsOpened;
         private HoldInteraction m_HoldInteraction;
 
@@ -33,6 +35,7 @@ namespace InteractionSystem.Runtime.Interactables
 
         private void Awake()
         {
+            base.Awake();
             m_HoldInteraction = GetComponent<HoldInteraction>();
 
             if (m_HoldInteraction == null)
@@ -57,6 +60,9 @@ namespace InteractionSystem.Runtime.Interactables
         #region Methods
 
         /// <inheritdoc/>
+        public override string GetUnableToInteractPrompt(IInteractor interactor) => m_AlreadyOpenedPrompt;
+
+        /// <inheritdoc/>
         public override bool CanInteract(IInteractor interactor) => !m_IsOpened;
 
         /// <inheritdoc/>
@@ -70,6 +76,7 @@ namespace InteractionSystem.Runtime.Interactables
         private void HandleHoldComplete()
         {
             m_IsOpened = true;
+            PlayInteractionFeedback(true);
             Debug.Log("[Chest] Sandık açıldı!");
         }
 

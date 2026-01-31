@@ -12,12 +12,34 @@ namespace InteractionSystem.Runtime.Interactables
     /// </remarks>
     public class Switch : Interactable
     {
+        #region Fields
+
+        private bool m_IsOn;
+
+        #endregion
+
         #region Events
 
         /// <summary>
         /// Toggle edildiğinde tetiklenir. Inspector'dan dinleyiciler bağlanabilir.
         /// </summary>
         public UnityEvent OnToggle;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Kol şu an açık (on) durumda mı?
+        /// </summary>
+        public bool IsOn => m_IsOn;
+
+        #endregion
+
+        #region Interactable Overrides
+
+        /// <inheritdoc/>
+        protected override bool IsInActiveState() => m_IsOn;
 
         #endregion
 
@@ -29,6 +51,8 @@ namespace InteractionSystem.Runtime.Interactables
         /// <inheritdoc/>
         public override void Interact(IInteractor interactor)
         {
+            m_IsOn = !m_IsOn;
+            PlayInteractionFeedback(m_IsOn);
             OnToggle?.Invoke();
         }
 

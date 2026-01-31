@@ -73,7 +73,10 @@ namespace InteractionSystem.Runtime.UI
 
             if (m_PromptText != null)
             {
-                m_PromptText.text = currentTarget.GetInteractionPrompt();
+                bool canInteract = m_Interactor != null && currentTarget.CanInteract(m_Interactor);
+                m_PromptText.text = canInteract
+                    ? currentTarget.GetInteractionPrompt()
+                    : currentTarget.GetUnableToInteractPrompt(m_Interactor);
             }
 
             if (m_ProgressBarFill != null)

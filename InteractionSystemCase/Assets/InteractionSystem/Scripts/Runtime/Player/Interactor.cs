@@ -136,6 +136,11 @@ namespace InteractionSystem.Runtime.Player
                 return;
             }
 
+            if (!m_CurrentTarget.CanInteract(this))
+            {
+                return;
+            }
+
             Interaction interaction = GetInteractionFromTarget(m_CurrentTarget);
 
             if (interaction != null)
@@ -192,7 +197,7 @@ namespace InteractionSystem.Runtime.Player
 
             IInteractable interactable = hit.collider.GetComponentInParent<IInteractable>();
 
-            if (interactable != null && interactable.CanInteract(this))
+            if (interactable != null)
             {
                 m_CurrentTarget = interactable;
             }
