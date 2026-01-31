@@ -64,6 +64,7 @@ namespace InteractionSystem.Runtime.Interactables
             var s = JsonUtility.FromJson<SwitchState>(json);
             m_IsOn = s.isOn;
             SyncAnimatorToState(m_IsOn);
+            SyncTransformToState(m_IsOn);
         }
 
         #endregion

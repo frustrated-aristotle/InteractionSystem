@@ -106,6 +106,7 @@ namespace InteractionSystem.Runtime.Interactables
             m_IsOpen = s.isOpen;
             m_IsLocked = s.isLocked;
             SyncAnimatorToState(m_IsOpen);
+            SyncTransformToState(m_IsOpen);
         }
 
         /// <inheritdoc/>

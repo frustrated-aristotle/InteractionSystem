@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using InteractionSystem.Runtime.Core;
 
 namespace InteractionSystem.Runtime.Interactables
@@ -16,6 +17,7 @@ namespace InteractionSystem.Runtime.Interactables
     /// <remarks>
     /// HoldInteraction component gerektirir. UI progress bar Interactor.HoldProgress'e bağlanır.
     /// İlk açılışta içindeki item verilir ve info gösterilir; sonrasında "Already opened" ve etkileşim kapanır.
+    /// Trap sandık için OnOpened event'ine dinleyici bağlanır (düşman spawn, tuzak vb.).
     /// </remarks>
     [RequireComponent(typeof(HoldInteraction))]
     public class Chest : Interactable
@@ -26,6 +28,10 @@ namespace InteractionSystem.Runtime.Interactables
         private string m_AlreadyOpenedPrompt = "Already opened";
         [SerializeField] [Tooltip("Sandık açıldığında verilecek item (KeyItemData). Boşsa sadece açılır.")]
         private KeyItemData m_ItemInside;
+
+        [Header("Trigger (Trap vb.)")]
+        [SerializeField] [Tooltip("Sandık açıldığında tetiklenir. Trap sandık için buraya dinleyici bağla (spawn, ses vb.).")]
+        private UnityEvent m_OnOpened;
 
         private bool m_IsOpened;
         private bool m_WasOpenedBefore;
@@ -104,6 +110,7 @@ namespace InteractionSystem.Runtime.Interactables
             m_WasOpenedBefore = s.consumed;
             if (m_HoldInteraction != null) m_HoldInteraction.enabled = !s.consumed;
             SyncAnimatorToState(m_IsOpened);
+            SyncTransformToState(m_IsOpened);
         }
 
         /// <inheritdoc/>
@@ -153,6 +160,7 @@ namespace InteractionSystem.Runtime.Interactables
                 interactor.ShowItemInfo(ItemInfoKind.ChestItemReceived, m_ItemInside.KeyName, 3f);
             }
 
+            m_OnOpened?.Invoke();
             Debug.Log("[Chest] Sandık açıldı!");
         }
 

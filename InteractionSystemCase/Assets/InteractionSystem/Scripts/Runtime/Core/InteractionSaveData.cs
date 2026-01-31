@@ -20,6 +20,7 @@ namespace InteractionSystem.Runtime.Core
         public Entry[] chests = Array.Empty<Entry>();
         public Entry[] keyPickups = Array.Empty<Entry>();
         public Entry[] switches = Array.Empty<Entry>();
+        public Entry[] pressurePlates = Array.Empty<Entry>();
         public string[] inventoryKeyNames = Array.Empty<string>();
     }
 }

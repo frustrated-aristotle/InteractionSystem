@@ -73,6 +73,13 @@ namespace InteractionSystem.Runtime.Player
                 data.switches[i] = new InteractionSaveData.Entry { id = switches[i].GetSaveId(), state = switches[i].SerializeState() };
             }
 
+            var pressurePlates = FindObjectsOfType<PressurePlate>();
+            data.pressurePlates = new InteractionSaveData.Entry[pressurePlates.Length];
+            for (int i = 0; i < pressurePlates.Length; i++)
+            {
+                data.pressurePlates[i] = new InteractionSaveData.Entry { id = pressurePlates[i].GetSaveId(), state = pressurePlates[i].SerializeState() };
+            }
+
             var inventory = FindObjectOfType<Inventory>();
             data.inventoryKeyNames = inventory != null ? inventory.GetSaveState() : new string[0];
 
@@ -125,6 +132,14 @@ namespace InteractionSystem.Runtime.Player
                 foreach (var e in data.switches ?? System.Array.Empty<InteractionSaveData.Entry>())
                 {
                     if (e.id == sw.GetSaveId()) { sw.LoadState(e.state); break; }
+                }
+            }
+
+            foreach (var pp in FindObjectsOfType<PressurePlate>())
+            {
+                foreach (var e in data.pressurePlates ?? System.Array.Empty<InteractionSaveData.Entry>())
+                {
+                    if (e.id == pp.GetSaveId()) { pp.LoadState(e.state); break; }
                 }
             }
 

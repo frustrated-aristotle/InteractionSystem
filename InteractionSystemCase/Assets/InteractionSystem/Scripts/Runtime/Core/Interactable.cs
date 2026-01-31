@@ -29,6 +29,16 @@ namespace InteractionSystem.Runtime.Core
         [SerializeField] [Tooltip("Kayıt için benzersiz ID. Boşsa gameObject.name kullanılır.")]
         private string m_SaveId = "";
 
+        [Header("Open/Closed Rotation (Load)")]
+        [SerializeField] [Tooltip("Açık/kapalı rotasyonları yüklemede kullanılsın mı? Kapalı/Açık Rotation'ları doldur.")]
+        private bool m_UseOpenClosedRotation = true;
+        [SerializeField] [Tooltip("Kapalı (normal) pozisyon – Local Euler (X,Y,Z). Yüklemede kapalı state için uygulanır.")]
+        private Vector3 m_ClosedRotationEuler = Vector3.zero;
+        [SerializeField] [Tooltip("Açık (ikinci) pozisyon – Local Euler (X,Y,Z). Yüklemede açık state için uygulanır.")]
+        private Vector3 m_OpenRotationEuler = Vector3.zero;
+        [SerializeField] [Tooltip("Rotasyon uygulanacak transform. Boşsa bu objenin transform'u kullanılır.")]
+        private Transform m_RotationTarget;
+
         [Header("Animation & Audio")]
         [SerializeField] [Tooltip("Boş bırakılırsa aynı GameObject'te aranır.")] private Animator m_Animator;
         [SerializeField] [Tooltip("Başlangıçta kapalı pozu göstermek için kapanma state adı (örn: A_Door_Close). Boşsa atlanır.")]
@@ -91,6 +101,11 @@ namespace InteractionSystem.Runtime.Core
                 {
                     m_Animator.Play(closedState, 0, 1f);
                 }
+            }
+
+            if (m_UseOpenClosedRotation)
+            {
+                SyncTransformToState(false);
             }
         }
 
@@ -192,6 +207,19 @@ namespace InteractionSystem.Runtime.Core
             }
 
             PlayInteractionSound(isOpening);
+        }
+
+        /// <summary>
+        /// Kayıt yüklendiğinde açık/kapalı rotasyonu uygular. Inspector'daki Closed/Open Rotation (Euler) kullanılır.
+        /// LoadState override'larında state flag'leri set edildikten sonra çağrılmalı.
+        /// </summary>
+        /// <param name="isActive">Açık ise true (Open Rotation), kapalı ise false (Closed Rotation).</param>
+        protected void SyncTransformToState(bool isActive)
+        {
+            if (!m_UseOpenClosedRotation) return;
+
+            Transform target = m_RotationTarget != null ? m_RotationTarget : transform;
+            target.localRotation = Quaternion.Euler(isActive ? m_OpenRotationEuler : m_ClosedRotationEuler);
         }
 
         /// <summary>
