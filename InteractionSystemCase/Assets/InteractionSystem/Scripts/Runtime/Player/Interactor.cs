@@ -17,8 +17,10 @@ namespace InteractionSystem.Runtime.Player
         #region Fields
 
         [SerializeField] private float m_InteractionRange = 2f;
-        [SerializeField] [Tooltip("Bu mesafeye kadar bakılan nesne tespit edilir; out of range feedback için gerekli.")]
+        [SerializeField] [Tooltip("Bu mesafeye kadar bakılan nesne tespit edilir; menzil dışındayken 'Out of range' göstermek için Interaction Range'dan büyük olmalı.")]
         private float m_DetectionRange = 5f;
+        [SerializeField] [Tooltip("Raycast bu katmanlara çarpar. Oyuncu önce vuruluyorsa Player katmanını kaldır.")]
+        private LayerMask m_RaycastLayers = ~0;
         [SerializeField] private KeyCode m_InteractKey = KeyCode.E;
         [SerializeField] private bool m_UseOutlineHighlight = true;
         [SerializeField] [Tooltip("Boş bırakılırsa Camera.main kullanılır.")] private Camera m_ViewCamera;
@@ -80,6 +82,11 @@ namespace InteractionSystem.Runtime.Player
             if (m_InfoDisplay == null)
             {
                 m_InfoDisplay = FindAnyObjectByType<InfoDisplay>();
+            }
+
+            if (m_DetectionRange < m_InteractionRange)
+            {
+                m_DetectionRange = m_InteractionRange + 1f;
             }
         }
 
@@ -225,7 +232,7 @@ namespace InteractionSystem.Runtime.Player
             float maxDistance = Mathf.Max(m_InteractionRange, m_DetectionRange);
             Ray ray = new Ray(m_ViewCamera.transform.position, m_ViewCamera.transform.forward);
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, maxDistance))
+            if (!Physics.Raycast(ray, out RaycastHit hit, maxDistance, m_RaycastLayers))
             {
                 return;
             }

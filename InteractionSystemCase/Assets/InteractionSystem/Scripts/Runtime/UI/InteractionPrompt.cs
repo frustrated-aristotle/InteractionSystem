@@ -84,7 +84,7 @@ namespace InteractionSystem.Runtime.UI
                 string prompt;
                 if (!inRange)
                 {
-                    prompt = m_OutOfRangeText;
+                    prompt = string.IsNullOrEmpty(m_OutOfRangeText) ? "Out of range" : m_OutOfRangeText;
                 }
                 else
                 {
