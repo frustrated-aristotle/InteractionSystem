@@ -1,8 +1,16 @@
+using System;
 using UnityEngine;
 using InteractionSystem.Runtime.Core;
 
 namespace InteractionSystem.Runtime.Interactables
 {
+    [Serializable]
+    internal class DoorState
+    {
+        public bool isOpen;
+        public bool isLocked;
+    }
+
     /// <summary>
     /// Açılıp kapanabilen kapı. Kilitli ise sadece atanmış KeyItemData tipindeki anahtar açar.
     /// Animator ile Open/Close trigger kullanır (base Interactable).
@@ -81,6 +89,21 @@ namespace InteractionSystem.Runtime.Interactables
         protected override string GetClosedStateName() => "Idle";
 
         /// <inheritdoc/>
+        public override string SerializeState()
+        {
+            return JsonUtility.ToJson(new DoorState { isOpen = m_IsOpen, isLocked = m_IsLocked });
+        }
+
+        /// <inheritdoc/>
+        public override void LoadState(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return;
+            var s = JsonUtility.FromJson<DoorState>(json);
+            m_IsOpen = s.isOpen;
+            m_IsLocked = s.isLocked;
+        }
+
+        /// <inheritdoc/>
         public override string GetUnableToInteractPrompt(IInteractor interactor)
         {
             if (m_IsLocked && m_RequiredKey != null && (interactor == null || interactor.Inventory == null || !interactor.Inventory.HasKey(m_RequiredKey)))
@@ -143,6 +166,10 @@ namespace InteractionSystem.Runtime.Interactables
 
             m_IsOpen = !m_IsOpen;
             PlayInteractionFeedback(m_IsOpen);
+            if (m_IsOpen)
+            {
+                interactor.ShowItemInfo(ItemInfoKind.DoorOpened, ObjectName, 3f);
+            }
             Debug.Log(m_IsOpen ? "[Door] Kapı açıldı." : "[Door] Kapı kapatıldı.");
         }
 

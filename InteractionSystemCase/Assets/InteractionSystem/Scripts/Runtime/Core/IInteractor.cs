@@ -20,5 +20,13 @@ namespace InteractionSystem.Runtime.Core
         /// <param name="info">Gösterilecek metin.</param>
         /// <param name="displayDurationSeconds">Kaç saniye sonra silineceği (varsayılan 3).</param>
         void ShowItemInfo(string info, float displayDurationSeconds = 3f);
+
+        /// <summary>
+        /// Olay türüne göre formatlanmış mesajı infoText'te gösterir (örn: "Gold Key alındı", "Etkileşimli Kapı açıldı").
+        /// </summary>
+        /// <param name="kind">Olay türü (KeyPickedUp, DoorOpened, ChestItemReceived).</param>
+        /// <param name="subjectName">Özne adı (anahtar/kapı/item adı).</param>
+        /// <param name="displayDurationSeconds">Kaç saniye sonra silineceği (varsayılan 3).</param>
+        void ShowItemInfo(ItemInfoKind kind, string subjectName, float displayDurationSeconds = 3f);
     }
 }

@@ -25,6 +25,10 @@ namespace InteractionSystem.Runtime.Core
         [SerializeField] [Tooltip("Etkileşim yapılamadığında gösterilir (örn: Anahtar gerekli).")]
         private string m_PromptUnable = "Cannot interact";
 
+        [Header("Save/Load")]
+        [SerializeField] [Tooltip("Kayıt için benzersiz ID. Boşsa gameObject.name kullanılır.")]
+        private string m_SaveId = "";
+
         [Header("Animation & Audio")]
         [SerializeField] [Tooltip("Boş bırakılırsa aynı GameObject'te aranır.")] private Animator m_Animator;
         [SerializeField] [Tooltip("Başlangıçta kapalı pozu göstermek için kapanma state adı (örn: A_Door_Close). Boşsa atlanır.")]
@@ -122,6 +126,26 @@ namespace InteractionSystem.Runtime.Core
 
         /// <inheritdoc/>
         public abstract void Interact(IInteractor interactor);
+
+        #endregion
+
+        #region Save/Load
+
+        /// <summary>
+        /// Kayıt/yükleme için benzersiz ID. Varsayılan: gameObject.name.
+        /// </summary>
+        public virtual string GetSaveId() => string.IsNullOrEmpty(m_SaveId) ? gameObject.name : m_SaveId;
+
+        /// <summary>
+        /// Mevcut state'i JSON string olarak döndürür. Alt sınıflar override eder.
+        /// </summary>
+        public virtual string SerializeState() => "";
+
+        /// <summary>
+        /// Kayıtlı state'i uygular. Alt sınıflar override eder.
+        /// </summary>
+        /// <param name="json">SerializeState ile üretilmiş JSON.</param>
+        public virtual void LoadState(string json) { }
 
         #endregion
 

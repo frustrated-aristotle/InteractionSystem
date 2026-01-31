@@ -1,8 +1,15 @@
+using System;
 using UnityEngine;
 using InteractionSystem.Runtime.Core;
 
 namespace InteractionSystem.Runtime.Interactables
 {
+    [Serializable]
+    internal class ChestState
+    {
+        public bool consumed;
+    }
+
     /// <summary>
     /// Hold interaction ile açılan sandık. Bir kez açıldıktan sonra tekrar etkileşime girilemez.
     /// </summary>
@@ -33,6 +40,11 @@ namespace InteractionSystem.Runtime.Interactables
         /// Sandık şu an açık mı?
         /// </summary>
         public bool IsOpened => m_IsOpened;
+
+        /// <summary>
+        /// Sandıktan verilecek item (KeyItemData). Save/Load eşlemesi için kullanılır.
+        /// </summary>
+        public KeyItemData ItemInside => m_ItemInside;
 
         #endregion
 
@@ -75,6 +87,23 @@ namespace InteractionSystem.Runtime.Interactables
 
         /// <inheritdoc/>
         public override bool CanInteract(IInteractor interactor) => !m_Consumed;
+
+        /// <inheritdoc/>
+        public override string SerializeState()
+        {
+            return JsonUtility.ToJson(new ChestState { consumed = m_Consumed });
+        }
+
+        /// <inheritdoc/>
+        public override void LoadState(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return;
+            var s = JsonUtility.FromJson<ChestState>(json);
+            m_Consumed = s.consumed;
+            m_IsOpened = s.consumed;
+            m_WasOpenedBefore = s.consumed;
+            if (m_HoldInteraction != null) m_HoldInteraction.enabled = !s.consumed;
+        }
 
         /// <inheritdoc/>
         public override string GetInteractionPrompt()
@@ -120,8 +149,7 @@ namespace InteractionSystem.Runtime.Interactables
                 {
                     interactor.Inventory.AddItem(m_ItemInside);
                 }
-                string info = !string.IsNullOrWhiteSpace(m_ItemInside.Info) ? m_ItemInside.Info : m_ItemInside.KeyName;
-                interactor.ShowItemInfo(info, 3f);
+                interactor.ShowItemInfo(ItemInfoKind.ChestItemReceived, m_ItemInside.KeyName, 3f);
             }
 
             Debug.Log("[Chest] Sandık açıldı!");

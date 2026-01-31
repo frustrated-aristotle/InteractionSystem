@@ -1,8 +1,15 @@
+using System;
 using UnityEngine;
 using InteractionSystem.Runtime.Core;
 
 namespace InteractionSystem.Runtime.Interactables
 {
+    [Serializable]
+    internal class KeyPickupState
+    {
+        public bool isPickedUp;
+    }
+
     /// <summary>
     /// Instant interaction ile toplanabilen anahtar. Envantere eklenir.
     /// </summary>
@@ -51,6 +58,25 @@ namespace InteractionSystem.Runtime.Interactables
 
         #endregion
 
+        #region Save/Load
+
+        /// <inheritdoc/>
+        public override string SerializeState()
+        {
+            return JsonUtility.ToJson(new KeyPickupState { isPickedUp = m_IsPickedUp });
+        }
+
+        /// <inheritdoc/>
+        public override void LoadState(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return;
+            var s = JsonUtility.FromJson<KeyPickupState>(json);
+            m_IsPickedUp = s.isPickedUp;
+            gameObject.SetActive(!s.isPickedUp);
+        }
+
+        #endregion
+
         #region Interactable Overrides
 
         /// <inheritdoc/>
@@ -84,8 +110,7 @@ namespace InteractionSystem.Runtime.Interactables
             }
 
             interactor.Inventory.AddItem(m_KeyData);
-            string info = !string.IsNullOrWhiteSpace(m_KeyData.Info) ? m_KeyData.Info : m_KeyData.KeyName;
-            interactor.ShowItemInfo(info, 3f);
+            interactor.ShowItemInfo(ItemInfoKind.KeyPickedUp, m_KeyData.KeyName, 3f);
             PlayInteractionFeedback(true);
             m_IsPickedUp = true;
 

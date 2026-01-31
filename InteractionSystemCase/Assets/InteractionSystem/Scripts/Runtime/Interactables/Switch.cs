@@ -1,9 +1,16 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using InteractionSystem.Runtime.Core;
 
 namespace InteractionSystem.Runtime.Interactables
 {
+    [Serializable]
+    internal class SwitchState
+    {
+        public bool isOn;
+    }
+
     /// <summary>
     /// Toggle interaction ile başka nesneleri tetikleyen anahtar/kol.
     /// </summary>
@@ -43,6 +50,20 @@ namespace InteractionSystem.Runtime.Interactables
 
         /// <inheritdoc/>
         protected override string GetClosedStateName() => "Idle";
+
+        /// <inheritdoc/>
+        public override string SerializeState()
+        {
+            return JsonUtility.ToJson(new SwitchState { isOn = m_IsOn });
+        }
+
+        /// <inheritdoc/>
+        public override void LoadState(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return;
+            var s = JsonUtility.FromJson<SwitchState>(json);
+            m_IsOn = s.isOn;
+        }
 
         #endregion
 

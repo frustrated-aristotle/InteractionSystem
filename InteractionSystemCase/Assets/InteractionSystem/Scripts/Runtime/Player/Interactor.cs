@@ -93,6 +93,13 @@ namespace InteractionSystem.Runtime.Player
             m_InfoDisplay?.ShowInfo(info ?? "", displayDurationSeconds);
         }
 
+        /// <inheritdoc/>
+        public void ShowItemInfo(ItemInfoKind kind, string subjectName, float displayDurationSeconds = 3f)
+        {
+            string message = ItemInfoFormatter.GetMessage(kind, subjectName);
+            ShowItemInfo(message, displayDurationSeconds);
+        }
+
         private void Update()
         {
             FindBestInteractable();

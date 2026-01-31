@@ -25,6 +25,13 @@ namespace InteractionSystem.Runtime.UI
         [SerializeField] private TextMeshProUGUI m_PromptText;
         [SerializeField] [Tooltip("Hold progress bar fill image. Image Type = Filled olmalı.")] private Image m_ProgressBarFill;
 
+        [Header("Out of Range")]
+        [SerializeField] [Tooltip("Hedef menzil dışındayken gösterilir.")] private string m_OutOfRangeText = "Out of range";
+
+        [Header("Progress Bar Colors")]
+        [SerializeField] [Tooltip("Hold başlangıcında progress bar rengi.")] private Color m_ProgressBarColorStart = new Color(0.8f, 0.2f, 0.2f);
+        [SerializeField] [Tooltip("Hold tamamlanmaya yaklaşırken (yeşil).")] private Color m_ProgressBarColorEnd = new Color(0.2f, 0.8f, 0.2f);
+
         #endregion
 
         #region Unity Methods
@@ -73,10 +80,21 @@ namespace InteractionSystem.Runtime.UI
 
             if (m_PromptText != null)
             {
-                bool canInteract = m_Interactor != null && currentTarget.CanInteract(m_Interactor);
-                m_PromptText.text = canInteract
-                    ? currentTarget.GetInteractionPrompt()
-                    : currentTarget.GetUnableToInteractPrompt(m_Interactor);
+                bool inRange = m_Interactor.IsTargetInRange;
+                string prompt;
+                if (!inRange)
+                {
+                    prompt = m_OutOfRangeText;
+                }
+                else
+                {
+                    bool canInteract = currentTarget.CanInteract(m_Interactor);
+                    prompt = canInteract
+                        ? currentTarget.GetInteractionPrompt()
+                        : currentTarget.GetUnableToInteractPrompt(m_Interactor);
+                }
+                string objectName = currentTarget.ObjectName ?? "";
+                m_PromptText.text = string.IsNullOrEmpty(objectName) ? prompt : $"{objectName}\n{prompt}";
             }
 
             if (m_ProgressBarFill != null)
@@ -88,7 +106,9 @@ namespace InteractionSystem.Runtime.UI
                 {
                     m_ProgressBarFill.type = Image.Type.Filled;
                     m_ProgressBarFill.fillMethod = Image.FillMethod.Horizontal;
-                    m_ProgressBarFill.fillAmount = m_Interactor.HoldProgress;
+                    float progress = m_Interactor.HoldProgress;
+                    m_ProgressBarFill.fillAmount = progress;
+                    m_ProgressBarFill.color = Color.Lerp(m_ProgressBarColorStart, m_ProgressBarColorEnd, progress);
                 }
             }
         }
