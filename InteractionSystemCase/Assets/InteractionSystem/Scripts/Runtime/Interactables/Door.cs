@@ -58,6 +58,9 @@ namespace InteractionSystem.Runtime.Interactables
         protected override bool IsInActiveState() => m_IsOpen;
 
         /// <inheritdoc/>
+        protected override string GetClosedStateName() => "Idle";
+
+        /// <inheritdoc/>
         public override string GetUnableToInteractPrompt(IInteractor interactor)
         {
             if (m_IsLocked && m_RequiredKey != null && (interactor == null || !interactor.Inventory.HasItem(m_RequiredKey)))

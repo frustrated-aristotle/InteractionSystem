@@ -41,6 +41,9 @@ namespace InteractionSystem.Runtime.Interactables
         /// <inheritdoc/>
         protected override bool IsInActiveState() => m_IsOn;
 
+        /// <inheritdoc/>
+        protected override string GetClosedStateName() => "Idle";
+
         #endregion
 
         #region Methods

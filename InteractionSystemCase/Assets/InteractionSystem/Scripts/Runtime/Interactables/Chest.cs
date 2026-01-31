@@ -63,6 +63,9 @@ namespace InteractionSystem.Runtime.Interactables
         public override string GetUnableToInteractPrompt(IInteractor interactor) => m_AlreadyOpenedPrompt;
 
         /// <inheritdoc/>
+        protected override string GetClosedStateName() => "Idle";
+
+        /// <inheritdoc/>
         public override bool CanInteract(IInteractor interactor) => !m_IsOpened;
 
         /// <inheritdoc/>
