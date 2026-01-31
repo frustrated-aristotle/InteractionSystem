@@ -10997,6 +10997,14 @@ PrefabInstance:
       propertyPath: m_InfoDisplay
       value: 
       objectReference: {fileID: 938429419}
+    - target: {fileID: 100228114553361184, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      propertyPath: m_DetectionRange
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 100228114553361184, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      propertyPath: m_InteractionRange
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       propertyPath: m_Name
       value: PlayerCapsule
