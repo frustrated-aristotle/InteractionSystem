@@ -53,6 +53,7 @@ namespace InteractionSystem.Runtime.Player
         {
             if (item == null)
             {
+                Debug.LogWarning("[Inventory] AddItem: item is null.");
                 return;
             }
 

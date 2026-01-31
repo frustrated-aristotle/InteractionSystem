@@ -97,10 +97,15 @@ namespace InteractionSystem.Runtime.Interactables
         /// <inheritdoc/>
         public override void LoadState(string json)
         {
-            if (string.IsNullOrEmpty(json)) return;
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogWarning($"[Door] LoadState: empty or null json for id={GetSaveId()}.");
+                return;
+            }
             var s = JsonUtility.FromJson<DoorState>(json);
             m_IsOpen = s.isOpen;
             m_IsLocked = s.isLocked;
+            SyncAnimatorToState(m_IsOpen);
         }
 
         /// <inheritdoc/>
@@ -150,6 +155,7 @@ namespace InteractionSystem.Runtime.Interactables
         {
             if (interactor == null || interactor.Inventory == null)
             {
+                Debug.LogWarning("[Door] Interact: interactor or Inventory is null.");
                 return;
             }
 

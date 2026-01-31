@@ -106,6 +106,7 @@ namespace InteractionSystem.Runtime.Interactables
         {
             if (interactor == null || m_IsPickedUp || m_KeyData == null)
             {
+                Debug.LogWarning("[KeyPickup] Interact: interactor or KeyData is null, or already picked up.");
                 return;
             }
 

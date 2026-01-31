@@ -103,6 +103,7 @@ namespace InteractionSystem.Runtime.Interactables
             m_IsOpened = s.consumed;
             m_WasOpenedBefore = s.consumed;
             if (m_HoldInteraction != null) m_HoldInteraction.enabled = !s.consumed;
+            SyncAnimatorToState(m_IsOpened);
         }
 
         /// <inheritdoc/>

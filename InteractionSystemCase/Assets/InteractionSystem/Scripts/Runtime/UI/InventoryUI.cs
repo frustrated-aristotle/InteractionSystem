@@ -64,11 +64,13 @@ namespace InteractionSystem.Runtime.UI
         {
             if (m_ListText == null)
             {
+                Debug.LogWarning("[InventoryUI] ListText not assigned; display skipped.");
                 return;
             }
 
             if (m_Inventory == null)
             {
+                Debug.LogWarning("[InventoryUI] Inventory not assigned; display cleared.");
                 m_ListText.text = "";
                 return;
             }

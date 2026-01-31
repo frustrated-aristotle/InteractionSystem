@@ -218,6 +218,7 @@ namespace InteractionSystem.Runtime.Player
 
             if (m_ViewCamera == null)
             {
+                Debug.LogWarning("[Interactor] View camera is null; interaction detection disabled.");
                 return;
             }
 

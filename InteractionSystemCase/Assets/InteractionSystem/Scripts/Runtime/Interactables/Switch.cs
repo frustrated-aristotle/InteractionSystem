@@ -63,6 +63,7 @@ namespace InteractionSystem.Runtime.Interactables
             if (string.IsNullOrEmpty(json)) return;
             var s = JsonUtility.FromJson<SwitchState>(json);
             m_IsOn = s.isOn;
+            SyncAnimatorToState(m_IsOn);
         }
 
         #endregion

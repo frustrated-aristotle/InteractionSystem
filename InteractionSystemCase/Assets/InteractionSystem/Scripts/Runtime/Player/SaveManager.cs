@@ -90,7 +90,11 @@ namespace InteractionSystem.Runtime.Player
 
             string json = PlayerPrefs.GetString(k_SaveKey);
             var data = JsonUtility.FromJson<InteractionSaveData>(json);
-            if (data == null) return;
+            if (data == null)
+            {
+                Debug.LogError("[SaveManager] Corrupt or invalid save data; load aborted.");
+                return;
+            }
 
             foreach (var door in FindObjectsOfType<Door>())
             {

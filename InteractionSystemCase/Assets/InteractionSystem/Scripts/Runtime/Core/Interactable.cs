@@ -33,6 +33,8 @@ namespace InteractionSystem.Runtime.Core
         [SerializeField] [Tooltip("Boş bırakılırsa aynı GameObject'te aranır.")] private Animator m_Animator;
         [SerializeField] [Tooltip("Başlangıçta kapalı pozu göstermek için kapanma state adı (örn: A_Door_Close). Boşsa atlanır.")]
         private string m_ClosedStateName = "";
+        [SerializeField] [Tooltip("LoadState sonrası açık pozu göstermek için açılma state adı (örn: A_Lever_Open). Boşsa sync atlanır.")]
+        private string m_OpenStateName = "";
         [SerializeField] private string m_OpenTrigger = "Open";
         [SerializeField] private string m_CloseTrigger = "Close";
         [SerializeField] [Tooltip("Etkileşimde animasyon parametreleri ve state debug loglansın mı?")]
@@ -97,6 +99,11 @@ namespace InteractionSystem.Runtime.Core
         /// Alt sınıflar override ederek kendi state adını döner (örn: A_Door_Close).
         /// </summary>
         protected virtual string GetClosedStateName() => m_ClosedStateName;
+
+        /// <summary>
+        /// LoadState sonrası açık pozu göstermek için kullanılan state adı. Alt sınıflar override edebilir.
+        /// </summary>
+        protected virtual string GetOpenStateName() => m_OpenStateName;
 
         #endregion
 
@@ -185,6 +192,37 @@ namespace InteractionSystem.Runtime.Core
             }
 
             PlayInteractionSound(isOpening);
+        }
+
+        /// <summary>
+        /// Kayıt yüklendiğinde animatorı mantıksal durumla senkronize eder (geçiş oynatmadan doğrudan state son karesi).
+        /// LoadState override'larında state flag'leri set edildikten sonra çağrılmalı.
+        /// </summary>
+        /// <param name="isActive">Açık/toggled ise true, kapalı ise false.</param>
+        protected void SyncAnimatorToState(bool isActive)
+        {
+            if (m_Animator == null)
+            {
+                Debug.LogWarning($"[Interactable] {gameObject.name}: Animator is null; SyncAnimatorToState skipped.");
+                return;
+            }
+
+            if (isActive)
+            {
+                string openState = GetOpenStateName();
+                if (!string.IsNullOrEmpty(openState))
+                {
+                    m_Animator.Play(openState, 0, 1f);
+                }
+            }
+            else
+            {
+                string closedState = GetClosedStateName();
+                if (!string.IsNullOrEmpty(closedState))
+                {
+                    m_Animator.Play(closedState, 0, 1f);
+                }
+            }
         }
 
         /// <summary>
