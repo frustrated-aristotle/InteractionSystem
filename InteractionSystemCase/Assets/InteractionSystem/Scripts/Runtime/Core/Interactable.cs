@@ -14,6 +14,8 @@ namespace InteractionSystem.Runtime.Core
         #region Fields
 
         [Header("Prompts")]
+        [SerializeField] [Tooltip("Prompt başlığında gösterilen obje adı.")]
+        private string m_ObjectName = "";
         [SerializeField] [Tooltip("Gösterilir: nesne kapalı/kapalı durumundayken (örn: Press E to open).")]
         private string m_PromptPositive = "Press E to interact";
 
@@ -51,6 +53,9 @@ namespace InteractionSystem.Runtime.Core
 
         /// <inheritdoc/>
         public virtual Transform InteractionPoint => transform;
+
+        /// <inheritdoc/>
+        public virtual string ObjectName => string.IsNullOrEmpty(m_ObjectName) ? gameObject.name : m_ObjectName;
 
         #endregion
 

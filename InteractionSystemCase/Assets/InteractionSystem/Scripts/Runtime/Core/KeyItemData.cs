@@ -18,6 +18,9 @@ namespace InteractionSystem.Runtime.Core
         [SerializeField] private string m_KeyName = "Key";
         [SerializeField] [Tooltip("Color-coded locks: UI ve kilit göstergesi için kullanılır.")]
         private Color m_KeyColor = Color.gray;
+        [SerializeField] [Tooltip("Toplandığında / sandıktan alındığında infoText'te gösterilir; 3 sn sonra silinir.")]
+        [TextArea(2, 4)]
+        private string m_Info = "";
 
         #endregion
 
@@ -32,6 +35,12 @@ namespace InteractionSystem.Runtime.Core
         /// Anahtar rengi. Color-coded locks / UI ikonu için.
         /// </summary>
         public Color KeyColor => m_KeyColor;
+
+        /// <summary>
+        /// Item alındığında gösterilecek bilgi metni (infoText, 3 sn).
+        /// </summary>
+        public string Info => m_Info ?? "";
+
 
         #endregion
     }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using InteractionSystem.Runtime.Core;
+using InteractionSystem.Runtime.UI;
 
 namespace InteractionSystem.Runtime.Player
 {
@@ -16,12 +17,16 @@ namespace InteractionSystem.Runtime.Player
         #region Fields
 
         [SerializeField] private float m_InteractionRange = 2f;
+        [SerializeField] [Tooltip("Bu mesafeye kadar bakılan nesne tespit edilir; out of range feedback için gerekli.")]
+        private float m_DetectionRange = 5f;
         [SerializeField] private KeyCode m_InteractKey = KeyCode.E;
         [SerializeField] private bool m_UseOutlineHighlight = true;
         [SerializeField] [Tooltip("Boş bırakılırsa Camera.main kullanılır.")] private Camera m_ViewCamera;
+        [SerializeField] [Tooltip("Item bilgisi (sandık/key) gösterilecek. Boşsa sahnede aranır.")] private InfoDisplay m_InfoDisplay;
 
         private Inventory m_Inventory;
         private IInteractable m_CurrentTarget;
+        private bool m_IsTargetInRange;
         private bool m_IsHolding;
         private Interaction m_ActiveHoldInteraction;
         private GameObject m_LastOutlinedRoot;
@@ -50,6 +55,11 @@ namespace InteractionSystem.Runtime.Player
         /// </summary>
         public float HoldProgress => m_ActiveHoldInteraction is HoldInteraction hold ? hold.Progress : 0f;
 
+        /// <summary>
+        /// Hedef nesne etkileşim menzilinde mi? False ise UI "Out of range" gösterebilir.
+        /// </summary>
+        public bool IsTargetInRange => m_IsTargetInRange;
+
         #endregion
 
         #region Unity Methods
@@ -66,6 +76,21 @@ namespace InteractionSystem.Runtime.Player
             {
                 m_ViewCamera = Camera.main;
             }
+
+            if (m_InfoDisplay == null)
+            {
+                m_InfoDisplay = FindAnyObjectByType<InfoDisplay>();
+            }
+        }
+
+        /// <inheritdoc/>
+        public void ShowItemInfo(string info, float displayDurationSeconds = 3f)
+        {
+            if (m_InfoDisplay == null)
+            {
+                m_InfoDisplay = FindAnyObjectByType<InfoDisplay>();
+            }
+            m_InfoDisplay?.ShowInfo(info ?? "", displayDurationSeconds);
         }
 
         private void Update()
@@ -87,7 +112,7 @@ namespace InteractionSystem.Runtime.Player
                 return;
             }
 
-            if (m_CurrentTarget != null && Input.GetKeyDown(m_InteractKey))
+            if (m_CurrentTarget != null && m_IsTargetInRange && Input.GetKeyDown(m_InteractKey))
             {
                 TryExecuteInteraction();
             }
@@ -100,7 +125,7 @@ namespace InteractionSystem.Runtime.Player
         /// <summary>
         /// Hold tamamlandığında çağrılır.
         /// </summary>
-        private void HandleHoldComplete()
+        private void HandleHoldComplete(IInteractor interactor)
         {
             if (m_ActiveHoldInteraction is HoldInteraction holdInteraction)
             {
@@ -177,20 +202,22 @@ namespace InteractionSystem.Runtime.Player
 
         /// <summary>
         /// Kamera yönünde raycast ile bakılan IInteractable nesneyi tespit eder.
-        /// Sadece bakıldığında tetiklenir.
+        /// Detection range içinde hedef seçilir; interaction range içindeyse etkileşim mümkün.
         /// </summary>
         private void FindBestInteractable()
         {
             m_CurrentTarget = null;
+            m_IsTargetInRange = false;
 
             if (m_ViewCamera == null)
             {
                 return;
             }
 
+            float maxDistance = Mathf.Max(m_InteractionRange, m_DetectionRange);
             Ray ray = new Ray(m_ViewCamera.transform.position, m_ViewCamera.transform.forward);
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, m_InteractionRange))
+            if (!Physics.Raycast(ray, out RaycastHit hit, maxDistance))
             {
                 return;
             }
@@ -200,12 +227,13 @@ namespace InteractionSystem.Runtime.Player
             if (interactable != null)
             {
                 m_CurrentTarget = interactable;
+                m_IsTargetInRange = hit.distance <= m_InteractionRange;
             }
         }
 
         /// <summary>
         /// Etkileşim hedefi değişince Quick Outline'ı açar/kapatır.
-        /// Sadece etkileşim kurulabilirken (CurrentTarget varken) outline aktif olur.
+        /// Sadece menzil içindeyken (CurrentTarget ve IsTargetInRange) outline aktif olur.
         /// </summary>
         private void UpdateOutlineHighlight()
         {
@@ -216,7 +244,8 @@ namespace InteractionSystem.Runtime.Player
                 return;
             }
 
-            GameObject currentRoot = GetOutlineRoot(m_CurrentTarget);
+            bool shouldOutline = m_CurrentTarget != null && m_IsTargetInRange;
+            GameObject currentRoot = shouldOutline ? GetOutlineRoot(m_CurrentTarget) : null;
 
             if (m_LastOutlinedRoot != currentRoot)
             {

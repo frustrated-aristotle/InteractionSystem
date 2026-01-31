@@ -13,5 +13,12 @@ namespace InteractionSystem.Runtime.Core
         /// Bu interactor'a ait envanter. Key toplama ve kapı kilidi kontrolü için kullanılır.
         /// </summary>
         IInventory Inventory { get; }
+
+        /// <summary>
+        /// Item bilgisini infoText'te gösterir; belirtilen süre sonra silinir (örn: sandık / key pickup).
+        /// </summary>
+        /// <param name="info">Gösterilecek metin.</param>
+        /// <param name="displayDurationSeconds">Kaç saniye sonra silineceği (varsayılan 3).</param>
+        void ShowItemInfo(string info, float displayDurationSeconds = 3f);
     }
 }

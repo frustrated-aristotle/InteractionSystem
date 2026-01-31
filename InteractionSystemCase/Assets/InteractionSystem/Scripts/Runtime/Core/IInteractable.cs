@@ -18,6 +18,11 @@ namespace InteractionSystem.Runtime.Core
         Transform InteractionPoint { get; }
 
         /// <summary>
+        /// Prompt'ta başlık olarak gösterilen obje adı (string).
+        /// </summary>
+        string ObjectName { get; }
+
+        /// <summary>
         /// Etkileşimi gerçekleştirir.
         /// </summary>
         /// <param name="interactor">Etkileşimi başlatan Interactor referansı.</param>

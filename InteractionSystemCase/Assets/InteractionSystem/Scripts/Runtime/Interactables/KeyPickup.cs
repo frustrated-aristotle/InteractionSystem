@@ -84,6 +84,8 @@ namespace InteractionSystem.Runtime.Interactables
             }
 
             interactor.Inventory.AddItem(m_KeyData);
+            string info = !string.IsNullOrWhiteSpace(m_KeyData.Info) ? m_KeyData.Info : m_KeyData.KeyName;
+            interactor.ShowItemInfo(info, 3f);
             PlayInteractionFeedback(true);
             m_IsPickedUp = true;
 

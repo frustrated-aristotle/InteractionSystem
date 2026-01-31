@@ -24,9 +24,9 @@ namespace InteractionSystem.Runtime.Core
         #region Events
 
         /// <summary>
-        /// Hold süresi tamamlandığında tetiklenir. UI progress bar ve sonuç işlemleri için kullanılır.
+        /// Hold süresi tamamlandığında tetiklenir. Etkileşimi başlatan interactor ile çağrılır (sandık item verme vb.).
         /// </summary>
-        public event Action OnHoldComplete;
+        public event Action<IInteractor> OnHoldComplete;
 
         #endregion
 
@@ -59,7 +59,7 @@ namespace InteractionSystem.Runtime.Core
             {
                 m_Timer = 0f;
                 OnExecute(interactor);
-                OnHoldComplete?.Invoke();
+                OnHoldComplete?.Invoke(interactor);
             }
         }
 

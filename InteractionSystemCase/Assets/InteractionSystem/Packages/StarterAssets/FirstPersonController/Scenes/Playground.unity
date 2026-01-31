@@ -497,6 +497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 818a5048310fb7f40bcc80e9090f87c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ObjectName: 
   m_PromptPositive: Press E to interact
   m_PromptNegative: Press E to interact
   m_PromptUnable: Cannot interact
@@ -796,6 +797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 818a5048310fb7f40bcc80e9090f87c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ObjectName: 
   m_PromptPositive: Press E to interact
   m_PromptNegative: Press E to interact
   m_PromptUnable: Cannot interact
@@ -807,7 +809,7 @@ MonoBehaviour:
   m_OpenSound: {fileID: 0}
   m_CloseSound: {fileID: 0}
   m_AudioSource: {fileID: 0}
-  m_KeyData: {fileID: 11400000, guid: b75d112f9684868489012f29a5c306ab, type: 2}
+  m_KeyData: {fileID: 11400000, guid: b5af3ec8e7c441b458cd4f3e2b936cdc, type: 2}
   m_DestroyOnPickup: 0
 --- !u!65 &873278349
 BoxCollider:
@@ -1205,6 +1207,9 @@ MonoBehaviour:
   m_PromptRoot: {fileID: 440172220}
   m_PromptText: {fileID: 440172222}
   m_ProgressBarFill: {fileID: 437294632}
+  m_OutOfRangeText: Out of range
+  m_ProgressBarColorStart: {r: 0.8, g: 0.2, b: 0.2, a: 1}
+  m_ProgressBarColorEnd: {r: 0.2, g: 0.8, b: 0.2, a: 1}
 --- !u!1 &1028513131
 GameObject:
   m_ObjectHideFlags: 0
@@ -1444,6 +1449,38 @@ PrefabInstance:
       propertyPath: m_Animator
       value: 
       objectReference: {fileID: 1945179943}
+    - target: {fileID: 2967579193940418647, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
+      propertyPath: m_LogAnimationDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2967579193940418647, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
+      propertyPath: OnToggle.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2967579193940418647, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
+      propertyPath: OnToggle.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2967579193940418647, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
+      propertyPath: OnToggle.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2128068610}
+    - target: {fileID: 2967579193940418647, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
+      propertyPath: OnToggle.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2967579193940418647, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
+      propertyPath: OnToggle.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Toggle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2967579193940418647, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
+      propertyPath: OnToggle.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: InteractionSystem.Runtime.Interactables.Door, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2967579193940418647, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
+      propertyPath: OnToggle.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5838644986212595049, guid: fa3c2059eb146494a93c78501b8a4697, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.8737702
@@ -1910,6 +1947,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fcd2e261dbde3f04698aff233930f217, type: 3}
+--- !u!114 &2128068610 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2776435093860449951, guid: 72efa7a8afc973f43a2605238c73edf5, type: 3}
+  m_PrefabInstance: {fileID: 2028225200}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4259e0632b09694fa4c8c1ed068cb02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &32822702818723122
 MeshFilter:
   m_ObjectHideFlags: 0
