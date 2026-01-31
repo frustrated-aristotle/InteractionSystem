@@ -15,11 +15,18 @@ namespace InteractionSystem.Runtime.Player
         private bool m_LoadOnStart = true;
         [SerializeField] [Tooltip("Uygulama kapanırken otomatik kaydet.")]
         private bool m_SaveOnQuit = true;
+        [SerializeField] [Tooltip("Her Play başında kaydı sil (test için temiz başlangıç).")]
+        private bool m_ClearSaveOnStart = false;
 
         #region Unity Methods
 
         private void Start()
         {
+            if (m_ClearSaveOnStart)
+            {
+                ClearSave();
+                Debug.Log("[SaveManager] Clear Save On Start: kayıt silindi.");
+            }
             if (m_LoadOnStart)
             {
                 StartCoroutine(LoadNextFrame());
@@ -93,6 +100,21 @@ namespace InteractionSystem.Runtime.Player
             string json = JsonUtility.ToJson(data);
             PlayerPrefs.SetString(k_SaveKey, json);
             PlayerPrefs.Save();
+            Debug.Log("[SaveManager] Save() tamamlandı.");
+        }
+
+        /// <summary>
+        /// Kayıtlı state'i siler. Sonraki Load() bir şey yüklemeyecek. Inspector'da sağ tık > Clear Save ile de çağrılabilir.
+        /// </summary>
+        [ContextMenu("Clear Save")]
+        public void ClearSave()
+        {
+            if (PlayerPrefs.HasKey(k_SaveKey))
+            {
+                PlayerPrefs.DeleteKey(k_SaveKey);
+                PlayerPrefs.Save();
+                Debug.Log("[SaveManager] Kayıt silindi (ClearSave).");
+            }
         }
 
         /// <summary>

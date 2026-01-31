@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 755195267078446360}
+  - component: {fileID: 3722910199479222704}
   m_Layer: 0
   m_Name: HandlePivot
   m_TagString: Untagged
@@ -32,6 +33,28 @@ Transform:
   - {fileID: 5424150288591641375}
   m_Father: {fileID: 5838644986212595049}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 30}
+--- !u!95 &3722910199479222704
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873034702326524812}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f5c5268902c06fd4c837d301a3eba8b3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6404699461115156576
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,14 +325,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9988a499a7bc844bb1e5caef6bb31a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ObjectName: Lever
   m_PromptPositive: Press E to interact
   m_PromptNegative: Press E to interact
   m_PromptUnable: Cannot interact
-  m_Animator: {fileID: 0}
+  m_SaveId: 
+  m_UseOpenClosedRotation: 1
+  m_ClosedRotationEuler: {x: 0, y: 0, z: 30}
+  m_OpenRotationEuler: {x: 0, y: 0, z: -30}
+  m_RotationTarget: {fileID: 755195267078446360}
+  m_Animator: {fileID: 3722910199479222704}
+  m_ClosedStateName: 
+  m_OpenStateName: 
   m_OpenTrigger: Open
   m_CloseTrigger: Close
-  m_OpenSound: {fileID: 8300000, guid: f5abdd4988916054e95e54294bc4d235, type: 3}
-  m_CloseSound: {fileID: 8300000, guid: 7c9ea27e0e8929c418cf189ca3335dbf, type: 3}
+  m_LogAnimationDebug: 1
+  m_OpenSound: {fileID: 8300000, guid: a99be97ccff0ded49bc154c8eee9365c, type: 3}
+  m_CloseSound: {fileID: 8300000, guid: f4002fe220ab3a0438c7718303415672, type: 3}
   m_AudioSource: {fileID: 0}
   OnToggle:
     m_PersistentCalls:

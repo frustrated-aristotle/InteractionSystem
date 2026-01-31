@@ -23,7 +23,7 @@ namespace InteractionSystem.Runtime.Interactables
     {
         #region Fields
 
-        [SerializeField] [Tooltip("Hangi tag basınca tetiklensin (varsayılan: Player).")]
+        [SerializeField] [Tooltip("Üzerine basan objenin tag'i (örn: Player). Boş bırakırsan her collider tetikler.")]
         private string m_TriggerTag = "Player";
 
         private bool m_IsPressed;
@@ -66,9 +66,15 @@ namespace InteractionSystem.Runtime.Interactables
             }
         }
 
+        private bool AcceptsCollider(Collider other)
+        {
+            if (string.IsNullOrEmpty(m_TriggerTag)) return true;
+            return other.CompareTag(m_TriggerTag);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.CompareTag(m_TriggerTag)) return;
+            if (!AcceptsCollider(other)) return;
 
             m_TriggerCount++;
             if (m_TriggerCount == 1)
@@ -81,7 +87,7 @@ namespace InteractionSystem.Runtime.Interactables
 
         private void OnTriggerExit(Collider other)
         {
-            if (!other.CompareTag(m_TriggerTag)) return;
+            if (!AcceptsCollider(other)) return;
 
             m_TriggerCount = Mathf.Max(0, m_TriggerCount - 1);
             if (m_TriggerCount == 0)
@@ -124,6 +130,7 @@ namespace InteractionSystem.Runtime.Interactables
             m_TriggerCount = m_IsPressed ? 1 : 0;
             SyncAnimatorToState(m_IsPressed);
             SyncTransformToState(m_IsPressed);
+            DelayedSyncRotation();
         }
 
         #endregion

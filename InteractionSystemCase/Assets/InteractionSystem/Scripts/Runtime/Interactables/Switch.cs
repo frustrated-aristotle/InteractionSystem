@@ -65,6 +65,7 @@ namespace InteractionSystem.Runtime.Interactables
             m_IsOn = s.isOn;
             SyncAnimatorToState(m_IsOn);
             SyncTransformToState(m_IsOn);
+            DelayedSyncRotation();
         }
 
         #endregion

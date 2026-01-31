@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 2560486601503188292}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -3.55, y: 1.1788613, z: 7.2295256}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -104,10 +104,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4259e0632b09694fa4c8c1ed068cb02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ObjectName: 
   m_PromptPositive: Press E to interact
   m_PromptNegative: Press E to interact
+  m_PromptUnable: Cannot interact
+  m_SaveId: 
+  m_RotationDrivenByAnimator: 0
+  m_UseOpenClosedRotation: 1
+  m_ClosedRotationEuler: {x: 0, y: 0, z: 0}
+  m_OpenRotationEuler: {x: 0, y: 0, z: 0}
+  m_RotationTarget: {fileID: 0}
+  m_Animator: {fileID: 0}
+  m_ClosedStateName: 
+  m_OpenStateName: 
+  m_OpenTrigger: Open
+  m_CloseTrigger: Close
+  m_LogAnimationDebug: 1
+  m_OpenSound: {fileID: 0}
+  m_CloseSound: {fileID: 0}
+  m_AudioSource: {fileID: 0}
   m_IsLocked: 1
   m_RequiredKey: {fileID: 0}
+  m_KeyRequiredPrompt: Anahtar gerekli
+  m_ShowKeyNameInPrompt: 1
 --- !u!54 &5415464789424307375
 Rigidbody:
   m_ObjectHideFlags: 0

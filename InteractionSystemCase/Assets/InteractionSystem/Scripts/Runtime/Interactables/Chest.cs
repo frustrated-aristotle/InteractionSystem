@@ -111,6 +111,7 @@ namespace InteractionSystem.Runtime.Interactables
             if (m_HoldInteraction != null) m_HoldInteraction.enabled = !s.consumed;
             SyncAnimatorToState(m_IsOpened);
             SyncTransformToState(m_IsOpened);
+            DelayedSyncRotation();
         }
 
         /// <inheritdoc/>

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace InteractionSystem.Runtime.Core
@@ -26,24 +27,29 @@ namespace InteractionSystem.Runtime.Core
         private string m_PromptUnable = "Cannot interact";
 
         [Header("Save/Load")]
-        [SerializeField] [Tooltip("Kayıt için benzersiz ID. Boşsa gameObject.name kullanılır.")]
+        [SerializeField] [Tooltip("Save ID varsayılan olarak objenin adı (GameObject.name) kullanılır. Sadece isim boş/aynı kalacaksa buraya benzersiz ID yazın.")]
         private string m_SaveId = "";
 
         [Header("Open/Closed Rotation (Load)")]
-        [SerializeField] [Tooltip("Açık/kapalı rotasyonları yüklemede kullanılsın mı? Kapalı/Açık Rotation'ları doldur.")]
+        [SerializeField] [Tooltip("Poz/rotasyonu Animator mı kontrol ediyor? (Chest/Lever gibi rig varsa işaretle – sadece Animator state/param yüklenir, transform rotasyonu atlanır.)")]
+        private bool m_RotationDrivenByAnimator = false;
+        [SerializeField] [Tooltip("Açık/kapalı rotasyonları yüklemede kullanılsın mı? Kapalı/Açık Rotation'ları doldur. Rotation Driven By Animator işaretliyse kullanılmaz.")]
         private bool m_UseOpenClosedRotation = true;
         [SerializeField] [Tooltip("Kapalı (normal) pozisyon – Local Euler (X,Y,Z). Yüklemede kapalı state için uygulanır.")]
         private Vector3 m_ClosedRotationEuler = Vector3.zero;
         [SerializeField] [Tooltip("Açık (ikinci) pozisyon – Local Euler (X,Y,Z). Yüklemede açık state için uygulanır.")]
         private Vector3 m_OpenRotationEuler = Vector3.zero;
-        [SerializeField] [Tooltip("Rotasyon uygulanacak transform. Boşsa bu objenin transform'u kullanılır.")]
+        [SerializeField] [Tooltip("Rotasyon uygulanacak transform. Boşsa ilk child veya root kullanılır.")]
         private Transform m_RotationTarget;
+
+        private int m_ForceRotationFramesRemaining;
+        private bool m_DidLogRotationTargetFallback;
 
         [Header("Animation & Audio")]
         [SerializeField] [Tooltip("Boş bırakılırsa aynı GameObject'te aranır.")] private Animator m_Animator;
-        [SerializeField] [Tooltip("Başlangıçta kapalı pozu göstermek için kapanma state adı (örn: A_Door_Close). Boşsa atlanır.")]
+        [SerializeField] [Tooltip("Kapalı pozu gösteren Animator state adı. Boşsa 'Close' kullanılır (controller'daki state adıyla aynı olmalı).")]
         private string m_ClosedStateName = "";
-        [SerializeField] [Tooltip("LoadState sonrası açık pozu göstermek için açılma state adı (örn: A_Lever_Open). Boşsa sync atlanır.")]
+        [SerializeField] [Tooltip("Açık pozu gösteren Animator state adı. Boşsa 'Open' kullanılır (controller'daki state adıyla aynı olmalı).")]
         private string m_OpenStateName = "";
         [SerializeField] private string m_OpenTrigger = "Open";
         [SerializeField] private string m_CloseTrigger = "Close";
@@ -93,33 +99,36 @@ namespace InteractionSystem.Runtime.Core
                 }
             }
 
-            // Başlangıçta kapalı state son karesi (Open/Close Trigger olduğu için Awake'te set edilmez)
+            // Başlangıçta kapalı state son karesi (Load varsa bir frame sonra ezilir)
             if (m_Animator != null)
             {
                 string closedState = GetClosedStateName();
                 if (!string.IsNullOrEmpty(closedState))
-                {
                     m_Animator.Play(closedState, 0, 1f);
-                }
             }
 
-            if (m_UseOpenClosedRotation)
-            {
+            if (m_UseOpenClosedRotation && !m_RotationDrivenByAnimator)
                 SyncTransformToState(false);
-                Debug.Log($"[Interactable] {gameObject.name} Awake: kapalı rotasyon uygulandı (Load varsa Start'ta ezilecek).");
+        }
+
+        private void LateUpdate()
+        {
+            if (m_ForceRotationFramesRemaining > 0 && !m_RotationDrivenByAnimator)
+            {
+                m_ForceRotationFramesRemaining--;
+                SyncTransformToState(IsInActiveState());
             }
         }
 
         /// <summary>
-        /// Başlangıçta gösterilecek kapalı state adı (kapanma animasyonunun son karesi).
-        /// Alt sınıflar override ederek kendi state adını döner (örn: A_Door_Close).
+        /// Kapalı pozu gösteren state adı. Boşsa "Close" kullanılır (controller'daki Open/Close trigger'larla uyumlu).
         /// </summary>
-        protected virtual string GetClosedStateName() => m_ClosedStateName;
+        protected virtual string GetClosedStateName() => string.IsNullOrEmpty(m_ClosedStateName) ? "Close" : m_ClosedStateName;
 
         /// <summary>
-        /// LoadState sonrası açık pozu göstermek için kullanılan state adı. Alt sınıflar override edebilir.
+        /// Açık pozu gösteren state adı. Boşsa "Open" kullanılır.
         /// </summary>
-        protected virtual string GetOpenStateName() => m_OpenStateName;
+        protected virtual string GetOpenStateName() => string.IsNullOrEmpty(m_OpenStateName) ? "Open" : m_OpenStateName;
 
         #endregion
 
@@ -155,9 +164,16 @@ namespace InteractionSystem.Runtime.Core
         #region Save/Load
 
         /// <summary>
-        /// Kayıt/yükleme için benzersiz ID. Varsayılan: gameObject.name.
+        /// Kayıt/yükleme için benzersiz ID. Önce objenin kendi adı (gameObject.name), boşsa m_SaveId, ikisi de boşsa type+instanceId kullanılır (hiç boş dönmez).
         /// </summary>
-        public virtual string GetSaveId() => string.IsNullOrEmpty(m_SaveId) ? gameObject.name : m_SaveId;
+        public virtual string GetSaveId()
+        {
+            if (!string.IsNullOrEmpty(gameObject.name))
+                return gameObject.name;
+            if (!string.IsNullOrEmpty(m_SaveId))
+                return m_SaveId;
+            return $"{GetType().Name}_{GetInstanceID()}";
+        }
 
         /// <summary>
         /// Mevcut state'i JSON string olarak döndürür. Alt sınıflar override eder.
@@ -182,6 +198,7 @@ namespace InteractionSystem.Runtime.Core
         /// <param name="isOpening">Açılıyorsa true, kapanıyorsa false.</param>
         protected void PlayInteractionFeedback(bool isOpening)
         {
+            m_ForceRotationFramesRemaining = 0;
             if (m_Animator == null)
             {
                 if (m_LogAnimationDebug)
@@ -211,18 +228,51 @@ namespace InteractionSystem.Runtime.Core
         }
 
         /// <summary>
-        /// Kayıt yüklendiğinde açık/kapalı rotasyonu uygular. Inspector'daki Closed/Open Rotation (Euler) kullanılır.
-        /// LoadState override'larında state flag'leri set edildikten sonra çağrılmalı.
+        /// Kayıt yüklendiğinde veya state değişince açık/kapalı rotasyonu uygular. Inspector'daki Closed/Open Rotation (Euler) kullanılır.
+        /// LoadState override'larında state flag'leri set edildikten sonra mutlaka çağrılmalı; rotasyon her zaman uygulanır (Use Open Closed Rotation kapalı olsa bile LoadState sonrası geçer).
         /// </summary>
         /// <param name="isActive">Açık ise true (Open Rotation), kapalı ise false (Closed Rotation).</param>
         protected void SyncTransformToState(bool isActive)
         {
-            if (!m_UseOpenClosedRotation) return;
-
-            Transform target = m_RotationTarget != null ? m_RotationTarget : transform;
+            if (m_RotationDrivenByAnimator) return;
+            Transform target = GetRotationTarget();
             Vector3 euler = isActive ? m_OpenRotationEuler : m_ClosedRotationEuler;
             target.localRotation = Quaternion.Euler(euler);
-            Debug.Log($"[Interactable] {gameObject.name} SyncTransformToState | isActive={isActive} | target={target.name} | euler=({euler.x:F1},{euler.y:F1},{euler.z:F1})");
+        }
+
+        private Transform GetRotationTarget()
+        {
+            if (m_RotationTarget != null) return m_RotationTarget;
+            if (transform.childCount > 0)
+            {
+                Transform child = transform.GetChild(0);
+                if (!m_DidLogRotationTargetFallback)
+                {
+                    m_DidLogRotationTargetFallback = true;
+                    Debug.LogWarning($"[Interactable] {gameObject.name}: Rotation Target atanmamış, ilk child kullanılıyor: {child.name}. Doğru değilse Inspector'da Rotation Target atayın.");
+                }
+                return child;
+            }
+            return transform;
+        }
+
+        /// <summary>
+        /// LoadState sonrası bir frame bekleyip rotasyonu tekrar uygular (Animator vb. ezdiyse düzeltir). LoadState override'larının sonunda çağrılmalı.
+        /// </summary>
+        protected void DelayedSyncRotation()
+        {
+            StartCoroutine(DelayedSyncRotationRoutine());
+        }
+
+        private IEnumerator DelayedSyncRotationRoutine()
+        {
+            yield return null;
+            if (!m_RotationDrivenByAnimator)
+            {
+                SyncTransformToState(IsInActiveState());
+                m_ForceRotationFramesRemaining = 8;
+            }
+            SyncAnimatorToState(IsInActiveState());
         }
 
         /// <summary>
@@ -232,34 +282,14 @@ namespace InteractionSystem.Runtime.Core
         /// <param name="isActive">Açık/toggled ise true, kapalı ise false.</param>
         protected void SyncAnimatorToState(bool isActive)
         {
-            if (m_UseOpenClosedRotation)
-            {
-                Debug.Log($"[Interactable] {gameObject.name} SyncAnimatorToState SKIP (UseOpenClosedRotation=true, animator rotasyonu ezmesin diye).");
-                return;
-            }
-
             if (m_Animator == null)
             {
                 Debug.LogWarning($"[Interactable] {gameObject.name}: Animator is null; SyncAnimatorToState skipped.");
                 return;
             }
 
-            if (isActive)
-            {
-                string openState = GetOpenStateName();
-                if (!string.IsNullOrEmpty(openState))
-                {
-                    m_Animator.Play(openState, 0, 1f);
-                }
-            }
-            else
-            {
-                string closedState = GetClosedStateName();
-                if (!string.IsNullOrEmpty(closedState))
-                {
-                    m_Animator.Play(closedState, 0, 1f);
-                }
-            }
+            string stateName = isActive ? GetOpenStateName() : GetClosedStateName();
+            m_Animator.Play(stateName, 0, 1f);
         }
 
         /// <summary>

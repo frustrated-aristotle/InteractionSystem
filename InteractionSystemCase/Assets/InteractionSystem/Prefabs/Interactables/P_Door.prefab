@@ -95,10 +95,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6741520378221531922}
+  - component: {fileID: 569935759189363177}
   - component: {fileID: 2776435093860449951}
   - component: {fileID: 6869352077198271658}
-  - component: {fileID: 569935759189363177}
-  - component: {fileID: 6832501661917862027}
   m_Layer: 0
   m_Name: P_Door
   m_TagString: Untagged
@@ -124,48 +123,6 @@ Transform:
   - {fileID: 6942244360160272366}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2776435093860449951
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1620660672114720633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4259e0632b09694fa4c8c1ed068cb02, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PromptPositive: Press E to Open
-  m_PromptNegative: Press E to Close
-  m_PromptUnable: You Need A Key To Open
-  m_Animator: {fileID: 0}
-  m_OpenTrigger: Open
-  m_CloseTrigger: Close
-  m_OpenSound: {fileID: 0}
-  m_CloseSound: {fileID: 0}
-  m_AudioSource: {fileID: 0}
-  m_IsLocked: 1
-  m_RequiredKey: {fileID: 0}
-  m_KeyRequiredPrompt: Anahtar gerekli
---- !u!114 &6869352077198271658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1620660672114720633}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 2
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!54 &569935759189363177
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -193,27 +150,58 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &6832501661917862027
-BoxCollider:
+--- !u!114 &2776435093860449951
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1620660672114720633}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 2.0552318, z: 0.11556177}
-  m_Center: {x: 0, y: 0.95960534, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4259e0632b09694fa4c8c1ed068cb02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ObjectName: Wooden Door
+  m_PromptPositive: Press E to Open
+  m_PromptNegative: Press E to Close
+  m_PromptUnable: You Need A Gold Key To Open
+  m_SaveId: 
+  m_UseOpenClosedRotation: 1
+  m_ClosedRotationEuler: {x: 0, y: 0, z: 0}
+  m_OpenRotationEuler: {x: 0, y: -90, z: 0}
+  m_RotationTarget: {fileID: 3474717066297253711}
+  m_Animator: {fileID: 3242681189468456950}
+  m_ClosedStateName: 
+  m_OpenStateName: 
+  m_OpenTrigger: Open
+  m_CloseTrigger: Close
+  m_LogAnimationDebug: 1
+  m_OpenSound: {fileID: 8300000, guid: c1d64f9e8e991b041858058361f4fa43, type: 3}
+  m_CloseSound: {fileID: 8300000, guid: c1d64f9e8e991b041858058361f4fa43, type: 3}
+  m_AudioSource: {fileID: 0}
+  m_IsLocked: 1
+  m_RequiredKey: {fileID: 11400000, guid: b5af3ec8e7c441b458cd4f3e2b936cdc, type: 2}
+  m_KeyRequiredPrompt: You need a Golden Key
+  m_ShowKeyNameInPrompt: 1
+--- !u!114 &6869352077198271658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1620660672114720633}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &5748753631190060692
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,6 +299,7 @@ GameObject:
   - component: {fileID: 1104464927995750210}
   - component: {fileID: 4422063841630499277}
   - component: {fileID: 1690648504533990400}
+  - component: {fileID: 5943412783817672157}
   m_Layer: 0
   m_Name: Door_2
   m_TagString: Untagged
@@ -386,6 +375,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5943412783817672157
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6858640505467059256}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0070223, y: 1.5, z: 0.105134025}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8377982851699217763
 GameObject:
   m_ObjectHideFlags: 0
