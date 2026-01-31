@@ -1,4 +1,4 @@
-# Interaction System - [Adınız Soyadınız]
+# Interaction System - Abdullah Seçgeler
 
 > Ludu Arts Unity Developer Intern Case
 
@@ -17,7 +17,7 @@
 
 1. Repository'yi klonlayın:
 ```bash
-git clone https://github.com/[username]/[repo-name].git
+git clone https://github.com/frustrated-aristotle/InteractionSystem.git
 ```
 
 2. Unity Hub'da projeyi açın
